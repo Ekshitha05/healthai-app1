@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HealthAI Assistant</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+    <!-- Sidebar with Patient Info -->
+    <aside class="sidebar">
+        <h2>Patient Profile</h2>
+        <label>Name:<input type="text" id="name"></label>
+        <label>Age:<input type="number" id="age"></label>
+        <label>Gender:
+            <select id="gender">
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+        </label>
+        <label>Symptoms:<textarea id="symptoms"></textarea></label>
+        <label>Medical History:<textarea id="history"></textarea></label>
+        <label>Condition (for Treatment):<input type="text" id="condition"></label>
+
+        <!-- Buttons -->
+        <div class="button-group">
+            <button onclick="askQuestion()">Ask Question</button>
+            <button onclick="getPrediction()">Get Prediction</button>
+            <button onclick="getTreatment()">Get Treatment</button>
+        </div>
+
+        <!-- Analytics -->
+        <div class="analytics">
+            <h3>Analytics Chart</h3>
+            <img src="/analytics-graph" alt="Analytics Chart" style="width: 100%; border: 1px solid #ccc; border-radius: 8px; margin-top: 10px;">
+
+            <p>Questions Asked: <span id="questions-count">0</span></p>
+            <p>Predictions Made: <span id="predictions-count">0</span></p>
+            <p>Treatments Given: <span id="treatments-count">0</span></p>
+        </div>
+    </aside>
+
+    <!-- Main Chat Interface -->
+    <main class="chat-area">
+        <header>
+            <h1>💡 HealthAI - Intelligent Healthcare Assistant</h1>
+            <p>24/7 Patient Support</p>
+        </header>
+
+        <div class="chat-box" id="chat-box">
+            <!-- Chat bubbles go here -->
+        </div>
+
+        <form class="input-form" onsubmit="sendMessage(event)">
+            <input type="text" id="chat-input" placeholder="Ask your health question..." required />
+            <button type="submit">➤</button>
+        </form>
+    </main>
+</div>
+
+<script>
+    let questionCount = 0, predictionCount = 0, treatmentCount = 0;
+
+    function updateAnalytics() {
+        document.getElementById("questions-count").textContent = questionCount;
+        document.getElementById("predictions-count").textContent = predictionCount;
+        document.getElementById("treatments-count").textContent = treatmentCount;
+    }
+
+    function appendMessage(text, sender = 'bot') {
+        const msg = document.createElement('div');
+        msg.className = sender === 'user' ? 'user-message' : 'bot-message';
+        msg.textContent = text;
+        const box = document.getElementById('chat-box');
+        box.appendChild(msg);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function sendMessage(event) {
+        event.preventDefault();
+        const input = document.getElementById('chat-input');
+        const message = input.value.trim();
+        if (!message) return;
+
+        appendMessage(message, 'user');
+        input.value = '';
+        questionCount++;
+        updateAnalytics();
+
+        setTimeout(() => {
+            appendMessage("Thank you. Our assistant is analyzing your message.");
+        }, 600);
+    }
+
+    function askQuestion() {
+        const s = document.getElementById('symptoms').value.trim();
+        if (!s) return alert("Please enter symptoms.");
+        appendMessage(`My symptoms are: ${s}`, 'user');
+        setTimeout(() => {
+            appendMessage("You may have a mild viral infection. Drink fluids and rest.");
+        }, 600);
+        questionCount++; updateAnalytics();
+    }
+
+    function getPrediction() {
+        const s = document.getElementById('symptoms').value.trim();
+        if (!s) return alert("Enter symptoms for prediction.");
+        appendMessage("Analyzing your symptoms for prediction...", 'user');
+        setTimeout(() => {
+            appendMessage("Prediction: Likely Common Cold. Risk: Low.");
+        }, 600);
+        predictionCount++; updateAnalytics();
+    }
+
+    function getTreatment() {
+        const c = document.getElementById('condition').value.trim();
+        if (!c) return alert("Enter condition for treatment.");
+        appendMessage(`What is the treatment for ${c}?`, 'user');
+        setTimeout(() => {
+            appendMessage(`Treatment Plan: Rest, hydration, and paracetamol for ${c}.`);
+        }, 600);
+        treatmentCount++; updateAnalytics();
+    }
+</script>
+</body>
+</html>
